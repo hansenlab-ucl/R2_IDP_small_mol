@@ -28,8 +28,8 @@ Jupyter Notebook directories 2-6 (above) are independent and self-contained. Exe
   * [nmrglue=0.9.dev0](https://nmrglue.readthedocs.io/en/latest/install.html)
   * [matplotlib=3.3.4](https://matplotlib.org/stable/users/installing/index.html)  
   * [lmfit=1.0.1](https://lmfit.github.io/lmfit-py/installation.html)  
-  * [scipy==1.3.0](https://scipy.org/install/)  
-  * [pathos==0.2.3](https://pypi.org/project/pathos/)  
+  * [scipy=1.3.0](https://scipy.org/install/)  
+  * [pathos=0.2.3](https://pypi.org/project/pathos/)  
 
 The script has been written and tested with the above dependencies. Performance with other module versions has not been tested.
 
