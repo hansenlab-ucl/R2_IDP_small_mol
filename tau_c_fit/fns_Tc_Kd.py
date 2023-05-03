@@ -362,7 +362,7 @@ class fns_Tc_Kd:
     #
     # define a function to generate DOSY plots, based on a single protien concentration, 
     # and the R1 and R2 relaxtaion rates for free and boud molecule
-    def GenerateDOSY(self, pconc=None, grads=None, R2f=None, R2b=None, R1f=None, R1b=None):
+    def GenerateDOSY(self, pconc=None, grads=None, R2f=None, R2b=None, R1f=None, R1b=None, Db=None, Df=None):
         # this only works for a single concentration of protein
         if not isinstance(pconc,float):
             print(f' .GenerateDOSY() only works for a single protein concentration', file=sys.stderr)
@@ -400,7 +400,7 @@ class fns_Tc_Kd:
         for g in range(grads.shape[-1]):
             #
             # calculate the intensities due to diffusion
-            Ints = expm(self.Delta * self.GetGamma1(grads[g],R1f=R1f, R1b=R1b)) @ initp
+            Ints = expm(self.Delta * self.GetGamma1(grads[g],R1f=R1f, R1b=R1b, Df=Df, Db=Db )) @ initp
             #
             # apply 90 pulse and acquire the FID
             Prob = expm( (1./self.acqu['SW']) * self.GetGamma2(R2f=R2f, R2b=R2b) ) # Get propagator
@@ -475,8 +475,8 @@ class fns_Tc_Kd:
             calc = params[0] * np.exp( -np.square( self.gamma[self.nuc] * self.delta * self.grads)*(self.Delta-self.delta/3.) * params[1])
             return calc - dosy[peak_idx,:]/np.max(dosy[peak_idx,:])
 
-        lb = (0.9, self.params['Db']*0.9)
-        ub = (1.1, self.params['Df']*1.1)
+        lb = (0.9, np.min([self.params['Db'],self.params['Df']])*0.9)
+        ub = (1.1, np.max([self.params['Db'],self.params['Df']])*1.1)
     
         res = least_squares( f2min, [1., self.params['Df'] ], \
                              bounds = ( lb, ub ), verbose=0)

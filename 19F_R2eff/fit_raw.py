@@ -22,7 +22,7 @@ class fit_raw:
             # discard imaginary part
             data[data_key] = ng.proc_base.di(data[data_key])
             # autophase correction
-            data[data_key] = ng.process.proc_autophase.autops(data[data_key], 'acme')
+            #data[data_key] = ng.process.proc_autophase.autops(data[data_key], 'acme')
             # reverse the data
             data[data_key] = ng.proc_base.rev(data[data_key])
 
