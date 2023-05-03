@@ -36,8 +36,8 @@ FI5.SetParam('R1b',0.21) # set initial parameter for R1_bound in s-1
 FI5.SetParam('R2f',0.1901) # set initial parameter for R2_free, value from CPMG_R2eff expt in s-1
 FI5.SetParam('R2b',0.80) # set initial parameter for R2_bound in s-1
 FI5.SetParam('DeltaOmega','0.05ppm') # set initial parameter for DeltaOmega
-FI5.SetParam('Df', 1.524e-9) # set initial parameter for diffusion coeff of free mol, value from DOSY expt in m^2/s
-FI5.SetParam('Db', 1.5e-9) # set initial parameter for diffusion coeff of bound mol in m^2/s
+FI5.SetParam('Df', 1.48e-9) # set initial parameter for diffusion coeff of free mol, value from DOSY expt in m^2/s
+FI5.SetParam('Db', 1.48e-9) # set initial parameter for diffusion coeff of bound mol in m^2/s
 FI5.SetParam('kon', 3.3e6) # set initial parameter for k_on rate in M-1s−1
 FI5.SetParam('koff',400.) # set initial parameter for k_off rate in s-1
 FI5.SetParam('tcf', 0.02057741) # set initial parameter for tau_c_free in ns
