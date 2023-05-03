@@ -8,9 +8,9 @@ This repository contains code, analysis scripts, a pulse sequence, and input fil
 
 #### Jupyter Notebooks  
 2. Jupyter Notebook and code to create plots of 1D ligand-detected chemical shift data (19F and 1H NMR) in 1H_1D/ and 19F_1D/
-3. Jupyter Notebook and code to create plots of pseudo-2D ligand-detected longitudinal (spin-lattice, R1,eff) relaxation (19F NMR) in 19F_R1eff
-4. Jupyter Notebook and code to create plots of pseudo-2D ligand-detected transverse (spin-spin, R2,eff) relaxation (19F NMR) in 19F_R2eff
-5. Jupyter Notebook and code to create plots of pseudo-2D Diffusion Ordered SpectroscopY (DOSY) (1H NMR) in 1H_DOSY
+3. Jupyter Notebook and code to create plots of pseudo-2D ligand-detected longitudinal (spin-lattice, R1,eff) relaxation (19F NMR) in 19F_R1eff/
+4. Jupyter Notebook and code to create plots of pseudo-2D ligand-detected transverse (spin-spin, R2,eff) relaxation (19F NMR) in 19F_R2eff/
+5. Jupyter Notebook and code to create plots of pseudo-2D Diffusion Ordered SpectroscopY (DOSY) (1H NMR) in 1H_DOSY/
 6. Jupyter Notebook to create plots of CD data in CD/
 
 #### Analysis Scripts
