@@ -18,7 +18,7 @@ This repository contains code, analysis scripts, a pulse sequence, and input fil
 
 ## How to use this code
 
-Experimental data, including nuclear magnetic resonance (NMR) spectroscopy data files (.ft2 format) and circular dichroism (CD) data files (.txt format), should first be downloaded from Zenodo: [INSERT LINK HERE] and placed in a directory called Data in the same directory as this README.md file.
+Experimental data, including nuclear magnetic resonance (NMR) spectroscopy data files (.ft2 format) and circular dichroism (CD) data files (.txt format), should first be downloaded from Zenodo: https://zenodo.org/record/7892349#.ZFKIaezMIUp and placed in a directory called 'Data' in the same directory as this README.md file.
 
 Jupyter Notebook directories 2-6 (above) are independent and self-contained. Executing all cells in 19F_1D/ 19F_R1eff/ 19F_R2eff/ will output dictionaries containing data to various json files in json/. Executing json/write_file.ipynb will combine these data into an input data file for the tau_c_fit here: tau_c_fit/data.inp.
 
