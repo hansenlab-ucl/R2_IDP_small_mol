@@ -1,4 +1,4 @@
-# Extreme dynamics of a small molecule in its bound state with an in-trinsically disordered protein
+# Extreme dynamics of a small molecule in its bound state with an intrinsically disordered protein
 
 This repository contains code, analysis scripts, a pulse sequence, and input files to recreate all figures for the manuscript entitled "Extreme dynamics of a small molecule in its bound state with an intrinsically disordered protein" by Heller, Shukla, Figueiredo, and Hansen.
 
