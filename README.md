@@ -1,6 +1,6 @@
-# Small-molecule Binding to an Intrinsically Disordered Protein Revealed by Experimental NMR 19F Transverse Spin-relaxation
+# Extreme dynamics of a small molecule in its bound state with an intrinsically disordered protein
 
-This repository contains code, analysis scripts, a pulse sequence, and input files to recreate all figures for the manuscript entitled "Small-molecule Binding to an Intrinsically Disordered Protein Revealed by Experimental NMR 19F Transverse Spin-relaxation" by Heller, Shukla, Figueiredo, and Hansen.
+This repository contains code, analysis scripts, a pulse sequence, and input files to recreate all figures for the manuscript entitled "Extreme dynamics of a small molecule in its bound state with an intrinsically disordered protein" by Heller, Shukla, Figueiredo, and Hansen.
 
 ## This repository contains: 
 #### Pulse sequence  
