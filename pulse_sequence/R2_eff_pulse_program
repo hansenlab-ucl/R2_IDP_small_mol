@@ -1,8 +1,8 @@
 /*
 | Pulse sequence to measure 19F R2 via CPMG
 | including an anti-ringing sequence as described in
-| "Small-molecule Binding to an Intrinsically Disordered Protein 
-| Revealed by Experimental NMR 19F Transverse Spin-relaxation" 
+| "Extreme dynamics of a small molecule in its bound state with an 
+| intrinsically disordered protein" 
 | by Heller, Shukla, Figueiredo, and Hansen.
 */
 
