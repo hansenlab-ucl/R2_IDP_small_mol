@@ -4,8 +4,8 @@
 
   Analysis of 5FI binding to the disordered protein, NS5A-D2D3.  
   Analyse chemical shift, R1_eff, R2_eff, and DOSY data in support 
-  of 'Small-molecule binding to intrinsically disordered proteins revealed 
-  by experimental NMR 19F transverse spin-relaxation' by Heller, Shukla, 
+  of 'Extreme dynamics of a small molecule in its bound state with 
+  an in-trinsically disordered protein' by Heller, Shukla, 
   Figueiredo, and Hansen.
  
 """
@@ -29,15 +29,14 @@ FI5.Delta =  0.2   # set big delta, in s
 FI5.SetAcqu('SW',2000.) # set acquisition time 
 FI5.SetAcqu('TD',1024)  # acqt = (TD/2) / SW
 
-#
 #Set (initial) parameters
 FI5.SetParam('R1f',0.1708) # set initial parameter for R1_free, value from IR expt in s-1
 FI5.SetParam('R1b',0.21) # set initial parameter for R1_bound in s-1
 FI5.SetParam('R2f',0.1901) # set initial parameter for R2_free, value from CPMG_R2eff expt in s-1
 FI5.SetParam('R2b',0.80) # set initial parameter for R2_bound in s-1
 FI5.SetParam('DeltaOmega','0.05ppm') # set initial parameter for DeltaOmega
-FI5.SetParam('Df', 1.48e-9) # set initial parameter for diffusion coeff of free mol, value from DOSY expt in m^2/s
-FI5.SetParam('Db', 1.48e-9) # set initial parameter for diffusion coeff of bound mol in m^2/s
+FI5.SetParam('Df', 1.524e-9) # set initial parameter for diffusion coeff of free mol, value from DOSY expt in m^2/s
+FI5.SetParam('Db', 1.5e-9) # set initial parameter for diffusion coeff of bound mol in m^2/s
 FI5.SetParam('kon', 3.3e6) # set initial parameter for k_on rate in M-1s−1
 FI5.SetParam('koff',400.) # set initial parameter for k_off rate in s-1
 FI5.SetParam('tcf', 0.02057741) # set initial parameter for tau_c_free in ns
@@ -83,7 +82,9 @@ def Fitting(param_names, lb=None, ub=None, verbose=0):
 
         if 'Db' in param_names:
             Db_idx = np.where(np.char.equal(param_names, 'Db'))[0][0]
-            FI5.SetParam('Db',params[Db_idx])        
+            FI5.SetParam('Db',params[Db_idx])
+
+
 
         # calculate R1_free and R2_free from tau_c of free molecule
         R1f_tauc, R2f_tauc = FI5.R1_R2_tau_c(tc= FI5.params['tcf'])
@@ -199,77 +200,58 @@ print(f' ================================================= ')
 print(' Running chi-squared surface ... ', end='')
 sys.stdout.flush()
 #
-# do a chi-squared surface of Kd and koff (using all cores)
-# define arrays of K_ds and k_off values for chi-squared surface
+# do a chi-squared surface of Kd, koff, and tau_Cb (using all cores)
+# define arrays of K_ds, koffs, and tau_Cb values for chi-squared surface
 kds =  1e-6 * np.power(10, np.linspace(1.5,3.5, 21, endpoint=True) )  # 30 uM to 3.2 mM
-
 koffs= np.linspace(.1,6000,21,endpoint=True)                         #
+taucbs= 1e-2 *np.power(10, np.linspace(.01,2, 21, endpoint=True) )                         #
 
 # define chi-squared function
-def GetChi2(kd,koff):
+def GetChi2(kd,koff,taucb):
 
-    FI5.SetParam('kon', koff/kd)
-    FI5.SetParam('koff',koff)
+    FI5.SetParam('kon',  koff/kd)
+    FI5.SetParam('koff', koff)
+    FI5.SetParam('tcb',  taucb)
 
     # store values and put back later
     tcf = FI5.params['tcf']
-    tcb = FI5.params['tcb']
+    #tcb = FI5.params['tcb']
     DO  = FI5.params['DeltaOmega']
     Db  = FI5.params['Db']
     # 
-    val, err, corr, res = Fitting(['DeltaOmega','tcf','tcb','Db'], lb=(-0.1,0.01,0.01,10e-11), ub=(0.1,1000.0,1000,FI5.params['Df']), verbose=0)
+    val, err, corr, res = Fitting(['DeltaOmega','tcf','Db'], lb=(-0.1,0.01,10e-11), ub=(0.1,1000.0,FI5.params['Df']), verbose=0)
     FI5.params['tcf']=tcf
-    FI5.params['tcb']=tcb
+    #FI5.params['tcb']=tcb
     FI5.params['DeltaOmega']=DO
     FI5.params['Db']=Db
 
     return res.cost * 2.    # factor of 2 converts sum of squared residuals to the chi-squared.
 
-# initialize empty lists to store kd and koff vals
+# initialize empty lists to store kd, koff, taucbs vals
 x_list=[]
 y_list=[]
+z_list=[]
 # loop over each kd and koff val and append to respective lists
 for kd in kds:
     for koff in koffs:
-        x_list.append(kd)
-        y_list.append(koff)
-# use multiprocessing module to parallelize GetChi2 for each pair of kd and koff
+        for taucb in taucbs:
+            x_list.append(kd)
+            y_list.append(koff)
+            z_list.append(taucb)
+
+# use multiprocessing module to parallelize GetChi2 for each pair of kd and taucbs
 with Pool( os.cpu_count() ) as p: # os.cpu_count() returns the number of available CPUs
-    Chi2 = p.map(GetChi2, x_list, y_list) # map GetChi2 to each pair of kd and koff
+    Chi2 = p.map(GetChi2, x_list, y_list, z_list) # map GetChi2 to each pair of kd, koff and taucb
 
 Chi2=np.array(Chi2)
 
-
-np.savetxt('kds.txt', kds)
-np.savetxt('koffs.txt', koffs)
-np.savetxt('Chi2.txt', Chi2)
-
+# save K_d, k_off, tau_cb, Chi2 values for plotting in heatmap.ipynb
+np.savetxt('kds_tauc.txt', kds)
+np.savetxt('koffs_tauc.txt', koffs)
+np.savetxt('taucbs.txt', taucbs)
+np.savetxt('Chi2_kds_tauc.txt', Chi2)
 
 best_idx = np.argmin( Chi2 ) # find the index of min chi-squared val
-
-# make figure of chi-squared surface
-# create plot
-fig, ax = plt.subplots()
-ax.imshow( np.exp( -(Chi2.reshape(21,21).T-np.min(Chi2))/2. ), \
-            cmap='hot_r', \
-            extent=(np.min(np.log10(kds)),np.max(np.log10(kds)),np.min(koffs),np.max(koffs)), \
-            aspect='auto', \
-            origin='lower',
-            interpolation='quadric')
-
-
-ax.contour( Chi2.reshape(21,21).T-np.min(Chi2), \
-             origin='lower', \
-             extent=(np.min(np.log10(kds)),np.max(np.log10(kds)),np.min(koffs),np.max(koffs)), \
-             colors=['k','k'], linestyles=['solid','dashed'], \
-             levels=[2.30, 6.18] ) # For two variables 1 sigma at 2.30, 2 sigma at 6.18
-
-ax.set_xlabel(r' log$_{10}({\rm K}_{\rm d})$')
-ax.set_ylabel(r' $k_{\rm off}$  s$^{-1}$')
-fig.savefig('chi2surface.png',  dpi=300)
-# return figure object
-plt.clf()
-plt.close()
 
 print(' DONE ')
 sys.stdout.flush()
@@ -284,6 +266,7 @@ sys.stdout.flush() # flush the standard output buffer
 # set value of koff, kon, and kD where chi-squared val is a minimum
 FI5.SetParam('koff', y_list[best_idx])
 FI5.SetParam('kon' , y_list[best_idx]/x_list[best_idx])
+
 # calculate  R1f_tauc, R2f_tauc, R1b_tauc, and R2b_tauc from tau_c_free and tau_c_bound
 R1f_tauc, R2f_tauc = FI5.R1_R2_tau_c(tc=FI5.params['tcf'])
 R1b_tauc, R2b_tauc = FI5.R1_R2_tau_c(tc=FI5.params['tcb'])
